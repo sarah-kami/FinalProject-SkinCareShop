@@ -75,11 +75,11 @@ export default function AdminOrdersPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">سفارشات</h1>
+        <h1 className="text-3xl font-bold text-black">سفارشات</h1>
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-black"
+          className="px-4 py-2 border border-gray-300 rounded-xl text-sm text-black focus:outline-none focus:border-black"
         >
           <option value="">همه سفارشات</option>
           {Object.entries(statusMap).map(([val, { label }]) => (
@@ -89,36 +89,36 @@ export default function AdminOrdersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-xl">در حال بارگذاری...</div>
+        <div className="text-center py-20 text-xl text-black">در حال بارگذاری...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">سفارشی یافت نشد</div>
+        <div className="text-center py-20 text-black">سفارشی یافت نشد</div>
       ) : (
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="text-right p-4 text-gray-900">کاربر</th>
-                <th className="text-right p-4 text-gray-900">تعداد اقلام</th>
-                <th className="text-right p-4 text-gray-900">مبلغ کل</th>
-                <th className="text-right p-4 text-gray-900">تاریخ</th>
-                <th className="text-right p-4 text-gray-900">وضعیت</th>
-                <th className="text-center p-4 text-gray-900">تغییر وضعیت</th>
+                <th className="text-right p-4 text-black font-bold">کاربر</th>
+                <th className="text-right p-4 text-black font-bold">تعداد اقلام</th>
+                <th className="text-right p-4 text-black font-bold">مبلغ کل</th>
+                <th className="text-right p-4 text-black font-bold">تاریخ</th>
+                <th className="text-right p-4 text-black font-bold">وضعیت</th>
+                <th className="text-center p-4 text-black font-bold">تغییر وضعیت</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-t hover:bg-gray-50">
                   <td className="p-4">
-                    <p className="font-medium text-gray-900">{order.user?.name || '—'}</p>
+                    <p className="font-medium text-black">{order.user?.name || '—'}</p>
                     <p className="text-xs text-gray-500">{order.user?.email || ''}</p>
                   </td>
-                  <td className="p-4 text-gray-700">
+                  <td className="p-4 text-black">
                     {toPersianNumber(order.orderItems?.length || 0)} قلم
                   </td>
-                  <td className="p-4 font-medium text-gray-900">
+                  <td className="p-4 font-medium text-black">
                     {toPersianNumber(order.totalPrice)} تومان
                   </td>
-                  <td className="p-4 text-gray-700 text-sm">
+                  <td className="p-4 text-black text-sm">
                     {new Date(order.createdAt).toLocaleDateString('fa-IR')}
                   </td>
                   <td className="p-4">
@@ -131,7 +131,7 @@ export default function AdminOrdersPage() {
                       value={order.status}
                       disabled={updatingId === order._id}
                       onChange={(e) => updateStatus(order._id, e.target.value)}
-                      className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black disabled:opacity-50"
+                      className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:border-black disabled:opacity-50"
                     >
                       {Object.entries(statusMap).map(([val, { label }]) => (
                         <option key={val} value={val}>{label}</option>

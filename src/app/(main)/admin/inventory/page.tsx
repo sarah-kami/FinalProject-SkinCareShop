@@ -46,24 +46,31 @@ export default function AdminInventoryPage() {
     try {
       const token = localStorage.getItem('token');
       const { price, discountPrice, stock } = editing[id];
-      const body: Record<string, number> = {
-        price: parseFloat(price),
-        stock: parseInt(stock),
-      };
-      if (discountPrice) body.discountPrice = parseFloat(discountPrice);
+      
+      const form = new FormData();
+      form.append('price', price);
+      form.append('stock', stock);
+      if (discountPrice) form.append('discountPrice', discountPrice);
+
+      const product = products.find(p => p._id === id);
+      if (product?.images) {
+        product.images.forEach(img => form.append('existingImages', img));
+      }
 
       const res = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(body),
+        body: form,
       });
+
       if (res.ok) {
         const data = await res.json();
         setProducts(prev => prev.map(p => p._id === id ? data.data : p));
         alert('ذخیره شد');
+      } else {
+        alert('خطا در ذخیره');
       }
     } catch (err) {
       alert('خطا در ذخیره');
@@ -75,21 +82,23 @@ export default function AdminInventoryPage() {
   const getImageUrl = (img: string) =>
     img ? (img.startsWith('http') ? img : `http://localhost:5000${img}`) : '/placeholder.jpg';
 
-  if (loading) return <div className="text-center py-20 text-xl">در حال بارگذاری...</div>;
+  if (loading) return <div className="text-center py-20 text-xl text-black">در حال بارگذاری...</div>;
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">مدیریت موجودی و قیمت</h1>
+      <h1 className="text-3xl font-bold text-black mb-8">مدیریت موجودی و قیمت</h1>
 
       <div className="bg-white rounded-2xl shadow overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-100">
             <tr>
-              <th className="text-right p-4 text-gray-900">محصول</th>
-              <th className="text-right p-4 text-gray-900">قیمت (تومان)</th>
-              <th className="text-right p-4 text-gray-900">قیمت با تخفیف</th>
-              <th className="text-right p-4 text-gray-900">موجودی</th>
-              <th className="text-center p-4 text-gray-900">ذخیره</th>
+              <th className="text-right p-4 text-black font-bold">محصول</th>
+              <th className="text-right p-4 text-black font-bold">قیمت فعلی</th>
+              <th className="text-right p-4 text-black font-bold">قیمت (تومان)</th>
+              <th className="text-right p-4 text-black font-bold">قیمت با تخفیف</th>
+              <th className="text-right p-4 text-black font-bold">موجودی فعلی</th>
+              <th className="text-right p-4 text-black font-bold">موجودی جدید</th>
+              <th className="text-center p-4 text-black font-bold">ذخیره</th>
             </tr>
           </thead>
           <tbody>
@@ -102,11 +111,14 @@ export default function AdminInventoryPage() {
                     className="w-12 h-12 object-cover rounded-lg"
                   />
                   <div>
-                    <p className="font-medium text-gray-900">{product.name}</p>
+                    <p className="font-medium text-black">{product.name}</p>
                     {product.stock <= 3 && (
                       <p className="text-xs text-red-500">موجودی کم!</p>
                     )}
                   </div>
+                </td>
+                <td className="p-4 text-black font-medium">
+                  {toPersianNumber(product.price)} تومان
                 </td>
                 <td className="p-4">
                   <input
@@ -116,7 +128,7 @@ export default function AdminInventoryPage() {
                       ...prev,
                       [product._id]: { ...prev[product._id], price: e.target.value }
                     }))}
-                    className="w-36 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black"
+                    className="w-36 px-3 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:border-black"
                   />
                 </td>
                 <td className="p-4">
@@ -128,8 +140,11 @@ export default function AdminInventoryPage() {
                       [product._id]: { ...prev[product._id], discountPrice: e.target.value }
                     }))}
                     placeholder="اختیاری"
-                    className="w-36 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black"
+                    className="w-36 px-3 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:border-black"
                   />
+                </td>
+                <td className="p-4 text-black font-medium">
+                  {toPersianNumber(product.stock)} عدد
                 </td>
                 <td className="p-4">
                   <input
@@ -139,7 +154,7 @@ export default function AdminInventoryPage() {
                       ...prev,
                       [product._id]: { ...prev[product._id], stock: e.target.value }
                     }))}
-                    className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black"
+                    className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:border-black"
                   />
                 </td>
                 <td className="p-4 text-center">

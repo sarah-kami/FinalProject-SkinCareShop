@@ -15,6 +15,14 @@ interface Product {
   brand?: string;
 }
 
+const categoryLabel: Record<string, string> = {
+  cleanser: 'پاک‌کننده',
+  cream: 'کرم',
+  mask: 'ماسک',
+  serum: 'سرُم',
+  sunscreen: 'ضد آفتاب',
+};
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,14 +97,16 @@ export default function AdminProductsPage() {
             {products.map(product => (
               <tr key={product._id} className="border-t hover:bg-gray-50">
                 <td className="p-4 flex items-center gap-3">
-                  <img 
-                    src={getImageUrl(product.images?.[0] || '')} 
+                  <img
+                    src={getImageUrl(product.images?.[0] || '')}
                     alt={product.name}
                     className="w-12 h-12 object-cover rounded-lg"
                   />
                   <p className="font-medium text-gray-900">{product.name}</p>
                 </td>
-                <td className="p-4 text-gray-900">{product.category}</td>
+                <td className="p-4 text-gray-900">
+                  {categoryLabel[product.category] || product.category}
+                </td>
                 <td className="p-4 text-gray-900 font-medium">
                   {toPersianNumber(product.discountPrice || product.price)} تومان
                 </td>
