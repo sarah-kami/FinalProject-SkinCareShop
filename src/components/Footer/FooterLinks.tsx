@@ -4,8 +4,8 @@ export default function FooterLinks() {
       <h3 className="font-semibold mb-3">دسترسی سریع</h3>
       <ul className="space-y-2 text-sm">
         <li>همه محصولات</li>
-        <li className="mr-1">دسته‌بندی‌ها</li>
-        <li className="mr-1.5">تماس با ما</li>
+        <li className="">دسته‌بندی‌ها</li>
+        <li className="">تماس با ما</li>
       </ul>
     </div>
   );

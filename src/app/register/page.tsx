@@ -14,14 +14,12 @@ export default function RegisterPage() {
     password: '',
     phone: '',
   });
-  
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  
   const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
@@ -36,18 +34,17 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     if (formData.password !== confirmPassword) {
       setError('رمز عبور و تکرار آن مطابقت ندارد');
-      setLoading(false);
       return;
     }
     if (formData.password.length < 6) {
       setError('رمز عبور باید حداقل ۶ کاراکتر باشد');
-      setLoading(false);
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch('http://localhost:5000/api/auth/register', {
@@ -58,123 +55,104 @@ export default function RegisterPage() {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (data.success) {
         alert('ثبت‌نام با موفقیت انجام شد!');
         dispatch(loginUser({ email: formData.email, password: formData.password }));
         router.push('/');
       } else {
         setError(data.message || 'ثبت‌نام ناموفق بود');
       }
-    } catch (err: any) {
-      console.error("Register Error:", err);
-      setError('امکان اتصال به سرور وجود ندارد. مطمئن شوید بک‌اند در حال اجراست.');
+    } catch (err) {
+      setError('خطا در ارتباط با سرور');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">ثبت‌نام</h1>
-          <p className="text-gray-600">حساب کاربری جدید بسازید</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-[url('/login3.jpeg')] bg-cover bg-center bg-no-repeat relative">
+      {/* Overlay یکسان با صفحه لاگین */}
+      <div className="absolute inset-0 bg-black/50"></div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-5 py-3 rounded-2xl mb-6 text-center">
-            {error}
+      <div className="relative z-10 w-full max-w-md px-6 py-8">
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl p-10">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-bold text-white mb-2">ثبت‌نام</h1>
+            <p className="text-white/80">حساب کاربری جدید بسازید</p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">نام و نام خانوادگی</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="نام کامل خود را وارد کنید"
-              required
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/50 text-white p-4 rounded-2xl mb-6 text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <input 
+              type="text" 
+              name="name" 
+              value={formData.name} 
+              onChange={handleChange} 
+              placeholder="نام کامل" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white/70" 
+              required 
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">ایمیل</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="example@email.com"
-              required
+            
+            <input 
+              type="email" 
+              name="email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              placeholder="ایمیل" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white/70" 
+              required 
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">شماره تلفن</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="09123456789"
+            
+            <input 
+              type="tel" 
+              name="phone" 
+              value={formData.phone} 
+              onChange={handleChange} 
+              placeholder="شماره تلفن" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white/70" 
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">رمز عبور</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="••••••••"
-              required
+            
+            <input 
+              type="password" 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              placeholder="رمز عبور" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white/70" 
+              required 
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">تکرار رمز عبور</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="••••••••"
-              required
+            
+            <input 
+              type="password" 
+              value={confirmPassword} 
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              placeholder="تکرار رمز عبور" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white/70" 
+              required 
             />
+
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="w-full bg-white text-black py-4 rounded-2xl font-medium text-lg hover:bg-gray-100 transition disabled:opacity-70"
+            >
+              {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام'}
+            </button>
+          </form>
+
+          <div className="text-center mt-8">
+            <p className="text-white/70">
+              قبلاً حساب دارید؟{' '}
+              <Link href="/login" className="text-white hover:underline font-medium">
+                وارد شوید
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white py-4 rounded-2xl font-medium text-lg hover:bg-gray-900 disabled:opacity-70 mt-4"
-          >
-            {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام'}
-          </button>
-        </form>
-
-        <div className="text-center mt-10 text-sm">
-          <p className="text-gray-600 mb-3">قبلاً حساب کاربری دارید؟</p>
-          <Link href="/login" className="text-black hover:underline font-medium text-base">
-            وارد شوید
-          </Link>
         </div>
       </div>
     </div>

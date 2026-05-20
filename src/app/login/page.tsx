@@ -29,65 +29,69 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">ورود به حساب</h1>
-          <p className="text-gray-600">به فروشگاه پوستی خوش آمدید</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative"
+         style={{ 
+           backgroundImage: "url('/login3.jpeg')"   // ← اینجا عکس بک‌گراند خودت رو بذار
+         }}>
+      
+      {/* Overlay تیره برای خوانایی بهتر */}
+      <div className="absolute inset-0 bg-black/50"></div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-5 py-3 rounded-2xl mb-6 text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">ایمیل</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="example@email.com"
-              required
-            />
+      <div className="relative z-10 w-full max-w-md px-6">
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl p-10">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-bold text-white mb-2">ورود به حساب</h1>
+            <p className="text-white/80">به فروشگاه پوستی خوش آمدید</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">رمز عبور</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900
-                         focus:outline-none focus:border-black focus:ring-4 focus:ring-gray-200 
-                         focus:shadow-xl transition-all duration-200"
-              placeholder="••••••••"
-              required
-            />
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/50 text-white p-4 rounded-2xl mb-6 text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-white mb-2">ایمیل</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-5 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white"
+                placeholder="example@email.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white mb-2">رمز عبور</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-5 py-4 bg-white/10 border border-white/30 rounded-2xl text-white placeholder:text-white/60 focus:outline-none focus:border-white"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-white text-black py-4 rounded-2xl font-medium text-lg hover:bg-gray-100 transition disabled:opacity-70"
+            >
+              {isLoading ? 'در حال ورود...' : 'ورود به حساب'}
+            </button>
+          </form>
+
+          <div className="text-center mt-8">
+            <p className="text-white/70">
+              حساب کاربری ندارید؟{' '}
+              <Link href="/register" className="text-white hover:underline font-medium">
+                ثبت‌نام کنید
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-black text-white py-4 rounded-2xl font-medium text-lg hover:bg-gray-900 transition disabled:opacity-70 mt-4"
-          >
-            {isLoading ? 'در حال ورود...' : 'ورود'}
-          </button>
-        </form>
-
-        <div className="text-center mt-10 text-sm">
-          <p className="text-gray-600 mb-3">حساب کاربری ندارید؟</p>
-          <Link 
-            href="/register" 
-            className="text-black hover:underline font-medium text-base"
-          >
-            ثبت‌نام کنید
-          </Link>
         </div>
       </div>
     </div>
