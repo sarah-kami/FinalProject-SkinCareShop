@@ -31,7 +31,7 @@ export default function CategorySection() {
           {categories.map((category) => (
             <Link
               key={category.value}
-              href={`/products?category=${category.value}`}
+              href={`/category/${category.value}`}
               className="flex flex-col items-center gap-4 group"
             >
               <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-white shadow-lg border-4 border-white flex items-center justify-center transition duration-300 group-hover:scale-105 group-hover:shadow-2xl">
