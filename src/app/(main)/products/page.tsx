@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import ProductCard from '@/src/components/products/ProductCard';
+import { categories } from '@/src/data/categories';
 
 interface Product {
   _id: string;
@@ -16,13 +17,9 @@ interface Product {
   brand?: string;
 }
 
-const categories = [
+const allCategories = [
   { value: '', label: 'همه محصولات' },
-  { value: 'cleanser', label: 'پاک‌کننده' },
-  { value: 'cream', label: 'کرم' },
-  { value: 'mask', label: 'ماسک' },
-  { value: 'serum', label: 'سرُم' },
-  { value: 'sunscreen', label: 'ضد آفتاب' },
+  ...categories.map(c => ({ value: c.value, label: c.label }))
 ];
 
 async function getProducts(category: string, page: number, search: string) {
@@ -75,19 +72,19 @@ export default function ProductsPage() {
 
       <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-4xl mx-auto">
         <input
-  type="text"
-  placeholder="جستجو در محصولات..."
-  value={search}
-  onChange={(e) => updateUrl({ category: selectedCategory, search: e.target.value })}
-  className="flex-1 px-6 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black text-gray-900"
-/>
+          type="text"
+          placeholder="جستجو در محصولات..."
+          value={search}
+          onChange={(e) => updateUrl({ category: selectedCategory, search: e.target.value })}
+          className="flex-1 px-6 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black text-gray-900"
+        />
 
         <select
           value={selectedCategory}
           onChange={(e) => updateUrl({ category: e.target.value, search })}
           className="px-6 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black text-gray-900"
         >
-          {categories.map(cat => (
+          {allCategories.map(cat => (
             <option key={cat.value} value={cat.value}>{cat.label}</option>
           ))}
         </select>

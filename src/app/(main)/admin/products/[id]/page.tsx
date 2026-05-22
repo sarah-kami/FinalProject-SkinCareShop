@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { categories } from '@/src/data/categories';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -17,20 +18,18 @@ export default function EditProductPage() {
     description: '',
     price: '',
     discountPrice: '',
-    category: 'serum',
+    category: 'cleanser',
     stock: '',
     brand: '',
   });
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!id) return;
-      setLoading(true);
-      try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        const data = await res.json();
+    if (!id) return;
+    fetch(`http://localhost:5000/api/products/${id}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+      .then(r => r.json())
+      .then(data => {
         if (data.success) {
           const p = data.data;
           setFormData({
@@ -44,13 +43,9 @@ export default function EditProductPage() {
           });
           setExistingImages(p.images || []);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [id]);
 
   const handleChange = (
@@ -63,9 +58,7 @@ export default function EditProductPage() {
     if (e.target.files) {
       setNewImages(e.target.files);
       const previews: string[] = [];
-      Array.from(e.target.files).forEach((file) => {
-        previews.push(URL.createObjectURL(file));
-      });
+      Array.from(e.target.files).forEach((file) => previews.push(URL.createObjectURL(file)));
       setPreviewImages(previews);
     }
   };
@@ -77,7 +70,6 @@ export default function EditProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-
     try {
       const form = new FormData();
       form.append('name', formData.name);
@@ -87,20 +79,12 @@ export default function EditProductPage() {
       form.append('stock', formData.stock);
       if (formData.brand) form.append('brand', formData.brand);
       if (formData.discountPrice) form.append('discountPrice', formData.discountPrice);
-
-      // عکس‌های قدیمی که نگه داشتیم
-      existingImages.forEach((img) => form.append('existingImages', img));
-
-      // عکس‌های جدید
-      if (newImages) {
-        Array.from(newImages).forEach((img) => form.append('images', img));
-      }
+      existingImages.forEach(img => form.append('existingImages', img));
+      if (newImages) Array.from(newImages).forEach(img => form.append('images', img));
 
       const res = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: form,
       });
 
@@ -110,7 +94,7 @@ export default function EditProductPage() {
       } else {
         alert('خطا در ویرایش محصول');
       }
-    } catch (error) {
+    } catch {
       alert('خطا در ارتباط با سرور');
     } finally {
       setSubmitting(false);
@@ -128,23 +112,15 @@ export default function EditProductPage() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow p-8 space-y-6">
 
-        {/* عکس‌های فعلی */}
         {existingImages.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">عکس‌های فعلی</label>
             <div className="flex gap-3 flex-wrap">
               {existingImages.map((img, index) => (
                 <div key={index} className="relative">
-                  <img
-                    src={getImageUrl(img)}
-                    alt="product"
-                    className="w-24 h-24 object-cover rounded-xl border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeExistingImage(index)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
-                  >
+                  <img src={getImageUrl(img)} alt="product" className="w-24 h-24 object-cover rounded-xl border" />
+                  <button type="button" onClick={() => removeExistingImage(index)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
                     ×
                   </button>
                 </div>
@@ -153,27 +129,14 @@ export default function EditProductPage() {
           </div>
         )}
 
-        {/* آپلود عکس جدید */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            افزودن عکس جدید (اختیاری)
-          </label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900"
-          />
+          <label className="block text-sm font-medium text-gray-700 mb-2">افزودن عکس جدید (اختیاری)</label>
+          <input type="file" multiple accept="image/*" onChange={handleImageChange}
+            className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900" />
           {previewImages.length > 0 && (
             <div className="flex gap-3 mt-4 flex-wrap">
               {previewImages.map((src, index) => (
-                <img
-                  key={index}
-                  src={src}
-                  alt="preview"
-                  className="w-24 h-24 object-cover rounded-xl border"
-                />
+                <img key={index} src={src} alt="preview" className="w-24 h-24 object-cover rounded-xl border" />
               ))}
             </div>
           )}
@@ -209,11 +172,9 @@ export default function EditProductPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">دسته‌بندی</label>
             <select name="category" value={formData.category} onChange={handleChange}
               className="w-full px-5 py-4 border border-gray-300 rounded-2xl text-gray-900 focus:outline-none focus:border-black">
-              <option value="cleanser">پاک‌کننده</option>
-              <option value="cream">کرم</option>
-              <option value="mask">ماسک</option>
-              <option value="serum">سرُم</option>
-              <option value="sunscreen">ضد آفتاب</option>
+              {categories.map(cat => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
             </select>
           </div>
           <div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { toPersianNumber } from '@/src/utils/formatNumber';
+import { categoryLabel } from '@/src/data/categories';
 
 interface Product {
   _id: string;
@@ -12,14 +13,6 @@ interface Product {
   category: string;
   stock: number;
 }
-
-const categoryLabel: Record<string, string> = {
-  cleanser: 'پاک‌کننده',
-  cream: 'کرم',
-  mask: 'ماسک',
-  serum: 'سرُم',
-  sunscreen: 'ضد آفتاب',
-};
 
 export default function ProductCard({ product }: { product: Product }) {
   const mainImage = product.images?.[0]

@@ -5,6 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toPersianNumber } from '@/src/utils/formatNumber';
 
+
+
+
 interface Product {
   _id: string;
   name: string;
