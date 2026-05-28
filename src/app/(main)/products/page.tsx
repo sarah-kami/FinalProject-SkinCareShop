@@ -2,7 +2,6 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 import ProductCard from '@/src/components/products/ProductCard';
 import { categories } from '@/src/data/categories';
 
@@ -78,7 +77,6 @@ export default function ProductsPage() {
           onChange={(e) => updateUrl({ category: selectedCategory, search: e.target.value })}
           className="flex-1 px-6 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-black text-gray-900"
         />
-
         <select
           value={selectedCategory}
           onChange={(e) => updateUrl({ category: e.target.value, search })}
@@ -109,17 +107,17 @@ export default function ProductsPage() {
               <button
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-8 py-3 border rounded-2xl disabled:opacity-50 hover:bg-gray-100"
+                className="px-8 py-3 bg-black text-white rounded-2xl disabled:opacity-40 hover:bg-gray-800 transition"
               >
                 قبلی
               </button>
-              <span className="px-8 py-3 bg-gray-100 rounded-2xl font-medium">
+              <span className="px-8 py-3 bg-black text-white rounded-2xl font-medium">
                 صفحه {currentPage} از {totalPages}
               </span>
               <button
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-8 py-3 border rounded-2xl disabled:opacity-50 hover:bg-gray-100"
+                className="px-8 py-3 bg-black text-white rounded-2xl disabled:opacity-40 hover:bg-gray-800 transition"
               >
                 بعدی
               </button>
